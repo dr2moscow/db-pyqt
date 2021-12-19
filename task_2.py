@@ -6,10 +6,11 @@ from ipaddress import ip_network, ip_address
 from task_1 import host_ping
 
 
-def host_range_ping(_subnet_address, start_address=None, end_address=None):
+def host_range_ping(_subnet_address, start_address=None, end_address=None, info=True):
     """
     Функция перебирает диапазон ip-адесов. только последниий актет
     Полученный арес проверяет на доступность
+    :param info:
     :param _subnet_address:
     :param start_address:
     :param end_address:
@@ -38,7 +39,7 @@ def host_range_ping(_subnet_address, start_address=None, end_address=None):
         elif start_address is not None and end_address is not None:
             ip_addresses = [address for address in ip_addresses if
                             start_index < ip_addresses.index(address) < end_index]
-        return host_ping(ip_addresses)
+        return host_ping(ip_addresses, info=info)
 
 
 if __name__ == "__main__":
