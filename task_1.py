@@ -6,7 +6,7 @@
 """
 from ipaddress import ip_address
 from subprocess import Popen, PIPE
-s
+
 
 def host_ping(ip_addresses, timeout=100, req=1, info=True):
     result = []
