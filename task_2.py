@@ -10,10 +10,10 @@ def host_range_ping(_subnet_address, start_address=None, end_address=None, info=
     """
     Функция перебирает диапазон ip-адесов. только последниий актет
     Полученный арес проверяет на доступность
-    :param info:
-    :param _subnet_address:
-    :param start_address:
-    :param end_address:
+    :param info: отключае/включает отображение результата проверки на экран
+    :param _subnet_address: подсеть
+    :param start_address: начальный адрес
+    :param end_address: конечный адрес
     """
     start_index = -1
     end_index = 254
