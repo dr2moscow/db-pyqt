@@ -107,10 +107,11 @@ class ClientMaker(type):
                     if i.opname == 'LOAD_GLOBAL':
                         if i.argval not in methods:
                             methods.append(i.argval)
+                        elif i.opname == 'LOAD_ATTR':
         # Если обнаружено использование недопустимого метода accept, listen, socket бросаем исключение:
         for command in ('accept', 'listen', 'socket'):
             if command in methods:
-                raise TypeError('В классе обнаружено использование запрещённого метода')
+                raise TypeError(f'В классе обнаружено использование запрещённого метода - {methods}')
         # Вызов get_message или send_message из utils считаем корректным использованием сокетов
         if 'get_message' in methods or 'send_message' in methods:
             pass
