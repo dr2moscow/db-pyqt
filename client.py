@@ -2,7 +2,6 @@ import sys
 import json
 import socket
 import time
-import dis
 import argparse
 import logging
 import threading
@@ -17,7 +16,7 @@ from metaclasses import ClientMaker
 logger = logging.getLogger('client')
 
 
-# Класс формировки и отправки сообщений на сервер и взаимодействия с пользователем.
+# Класс формирования и отправки сообщений на сервер и взаимодействия с пользователем.
 class ClientSender(threading.Thread, metaclass=ClientMaker):
     def __init__(self, account_name, sock):
         self.account_name = account_name
@@ -47,7 +46,7 @@ class ClientSender(threading.Thread, metaclass=ClientMaker):
         try:
             send_message(self.sock, message_dict)
             logger.info(f'Отправлено сообщение для пользователя {to}')
-        except IndexError:
+        except:
             logger.critical('Потеряно соединение с сервером.')
             exit(1)
 
@@ -63,7 +62,7 @@ class ClientSender(threading.Thread, metaclass=ClientMaker):
             elif command == 'exit':
                 try:
                     send_message(self.sock, self.create_exit_message())
-                except IndexError:
+                except:
                     pass
                 print('Завершение соединения.')
                 logger.info('Завершение работы по команде пользователя.')
@@ -74,8 +73,7 @@ class ClientSender(threading.Thread, metaclass=ClientMaker):
                 print('Команда не распознана, попробойте снова. help - вывести поддерживаемые команды.')
 
     # Функция выводящяя справку по использованию.
-    @staticmethod
-    def print_help():
+    def print_help(self):
         print('Поддерживаемые команды:')
         print('message - отправить сообщение. Кому и текст будет запрошены отдельно.')
         print('help - вывести подсказки по командам')
@@ -149,8 +147,7 @@ def arg_parser():
     # проверим подходящий номер порта
     if not 1023 < server_port < 65536:
         logger.critical(
-            f'Попытка запуска клиента с неподходящим номером порта: {server_port}. '
-            f'Допустимы адреса с 1024 до 65535. Клиент завершается.')
+            f'Попытка запуска клиента с неподходящим номером порта: {server_port}. Допустимы адреса с 1024 до 65535. Клиент завершается.')
         exit(1)
 
     return server_address, server_port, client_name
@@ -170,8 +167,7 @@ def main():
         print(f'Клиентский модуль запущен с именем: {client_name}')
 
     logger.info(
-        f'Запущен клиент с парамертами: адрес сервера: {server_address} , порт: {server_port},'
-        f' имя пользователя: {client_name}')
+        f'Запущен клиент с парамертами: адрес сервера: {server_address} , порт: {server_port}, имя пользователя: {client_name}')
 
     # Инициализация сокета и сообщение серверу о нашем появлении
     try:
@@ -192,8 +188,7 @@ def main():
         exit(1)
     except (ConnectionRefusedError, ConnectionError):
         logger.critical(
-            f'Не удалось подключиться к серверу {server_address}:{server_port}, '
-            f'конечный компьютер отверг запрос на подключение.')
+            f'Не удалось подключиться к серверу {server_address}:{server_port}, конечный компьютер отверг запрос на подключение.')
         exit(1)
     else:
         # Если соединение с сервером установлено корректно, запускаем клиенский процесс приёма сообщний
