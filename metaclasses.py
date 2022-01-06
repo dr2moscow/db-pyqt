@@ -93,6 +93,9 @@ class ClientMaker(type):
 
         # Список методов, которые используются в функциях класса:
         methods = []
+
+        # Атрибуты, вызываемые функциями классов
+        attrs = []
         for func in clsdict:
             # Пробуем
             try:
@@ -108,6 +111,8 @@ class ClientMaker(type):
                         if i.argval not in methods:
                             methods.append(i.argval)
                         elif i.opname == 'LOAD_ATTR':
+                            if i.argval not in attrs:
+                                attrs.append(i.argval)
         # Если обнаружено использование недопустимого метода accept, listen, socket бросаем исключение:
         for command in ('accept', 'listen', 'socket'):
             if command in methods:
