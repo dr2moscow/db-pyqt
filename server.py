@@ -14,7 +14,7 @@ from common.utils import *
 from decos import log
 from descryptors import Port
 from metaclasses import ServerMaker
-from server_database import ServerStorage
+from server_database import ServerDB
 
 # Инициализация логирования сервера.
 logger = logging.getLogger('server')
@@ -180,7 +180,7 @@ def main():
     listen_address, listen_port = arg_parser()
 
     # Инициализация базы данных
-    database = ServerStorage()
+    database = ServerDB()
 
     # Создание экземпляра класса - сервера и его запуск:
     server = Server(listen_address, listen_port, database)
