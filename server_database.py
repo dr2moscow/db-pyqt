@@ -5,42 +5,48 @@ import datetime
 
 
 # Класс - серверная база данных:
-class ServerStorage:
-    # Класс - отображение таблицы всех пользователей
-    # Экземпляр этого класса - запись в таблице AllUsers
+class ServerDB:
     class AllUsers:
+        """ Все пользователи месенджера """
+        last_login = None
+        name = None
+
         def __init__(self, username):
+            self.id = None
             self.name = username
             self.last_login = datetime.datetime.now()
-            self.id = None
 
-    # Класс - отображение таблицы активных пользователей:
-    # Экземпляр этого класса - запись в таблице ActiveUsers
+    class LoginHistory:
+        """ История подключения пользователей """
+        date_time = None
+        ip_address = None
+        port = None
+
+        def __init__(self, name, date, ip_address, port):
+            self.id = None
+            self.name = name
+            self.date_time = date
+            self.ip = ip_address
+            self.port = port
+
     class ActiveUsers:
+        """ Список активных клиентов """
+        login_time = None
+        ip_address = None
+        port = None
+
         def __init__(self, user_id, ip_address, port, login_time):
+            self.id = None
             self.user = user_id
             self.ip_address = ip_address
             self.port = port
             self.login_time = login_time
-            self.id = None
-
-    # Класс - отображение таблицы истории входов
-    # Экземпляр этого класса - запись в таблице LoginHistory
-    class LoginHistory:
-        def __init__(self, name, date, ip, port):
-            self.id = None
-            self.name = name
-            self.date_time = date
-            self.ip = ip
-            self.port = port
 
     def __init__(self):
         # Создаём движок базы данных
         # SERVER_DATABASE - sqlite:///server_base.db3
         # echo=False - отключает вывод на экран sql-запросов)
         # pool_recycle - по умолчанию соединение с БД через 8 часов простоя обрывается
-        # Чтобы этого не случилось необходимо добавить pool_recycle=7200 (переустановка
-        #    соединения через каждые 2 часа)
         self.database_engine = create_engine(SERVER_DATABASE, echo=False, pool_recycle=7200)
 
         # Создаём объект MetaData
@@ -81,8 +87,8 @@ class ServerStorage:
         mapper(self.LoginHistory, user_login_history)
 
         # Создаём сессию
-        Session = sessionmaker(bind=self.database_engine)
-        self.session = Session()
+        session = sessionmaker(bind=self.database_engine)
+        self.session = session()
 
         # Если в таблице активных пользователей есть записи, то их необходимо удалить
         # Когда устанавливаем соединение, очищаем таблицу активных пользователей
@@ -92,7 +98,7 @@ class ServerStorage:
     # Функция выполняющаяся при входе пользователя, записывает в базу факт входа
     def user_login(self, username, ip_address, port):
         print(username, ip_address, port)
-        # Запрос в таблицу пользователей на наличие там пользователя с таким именем
+        # Проверка наличия пользователя в списке пользователей
         rez = self.session.query(self.AllUsers).filter_by(name=username)
 
         # Если имя пользователя уже присутствует в таблице, обновляем время последнего входа
@@ -160,7 +166,7 @@ class ServerStorage:
         # Запрашиваем историю входа
         query = self.session.query(self.AllUsers.name,
                                    self.LoginHistory.date_time,
-                                   self.LoginHistory.ip,
+                                   self.LoginHistory.ip_address,
                                    self.LoginHistory.port
                                    ).join(self.AllUsers)
         # Если было указано имя пользователя, то фильтруем по этому имени
@@ -172,10 +178,10 @@ class ServerStorage:
 
 # Отладка
 if __name__ == '__main__':
-    test_db = ServerStorage()
+    test_db = ServerDB()
     # Выполняем "подключение" пользователя
-    # test_db.user_login('client_1', '192.168.1.4', 8080)
-    # test_db.user_login('client_2', '192.168.1.5', 7777)
+    test_db.user_login('client_1', '192.168.1.4', 8080)
+    test_db.user_login('client_2', '192.168.1.5', 7777)
 
     # Выводим список кортежей - активных пользователей
     print(' ---- test_db.active_users_list() ----')
