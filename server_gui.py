@@ -71,7 +71,7 @@ class MainWindow(QMainWindow):
         self.refresh_button = QAction('Обновить список', self)
 
         # Кнопка настроек сервера
-        self.config_btn = QAction('Настройки сервера', self)
+        self.config_btn = QAction('&amp;Настройки сервера', self)
 
         # Кнопка вывести историю сообщений
         self.show_history_button = QAction('Статистика клиентов', self)

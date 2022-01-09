@@ -192,7 +192,7 @@ class ClientReader(threading.Thread, metaclass=ClientMaker):
             except IncorrectDataRecivedError:
                 logger.error(f'Не удалось декодировать полученное сообщение.')
             except (OSError, ConnectionError, ConnectionAbortedError, ConnectionResetError, json.JSONDecodeError):
-                logger.critical(f'2Потеряно соединение с сервером.')
+                logger.critical(f'\nПотеряно соединение с сервером.')
                 break
 
 
@@ -363,7 +363,7 @@ def main():
         send_message(transport, create_presence(client_name))
         answer = process_response_ans(get_message(transport))
         logger.info(f'Установлено соединение с сервером. Ответ сервера: {answer}')
-        print(f'Установлено соединение с сервером.')
+        print(f'Установлено соединение с сервером. {transport}')
     except json.JSONDecodeError:
         logger.error('Не удалось декодировать полученную Json строку.')
         exit(1)
